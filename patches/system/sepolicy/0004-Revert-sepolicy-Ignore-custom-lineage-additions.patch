@@ -1,0 +1,38 @@
+From 4028e24bd529427bf46981949f8e7e3021218374 Mon Sep 17 00:00:00 2001
+From: LuK1337 <priv.luk@gmail.com>
+Date: Wed, 21 Feb 2018 02:59:18 +0100
+Subject: [PATCH 04/11] Revert "sepolicy: Ignore custom lineage additions"
+
+This reverts commit 90c22d2e645e72b034d5631897de190c7e2a73fa.
+
+Change-Id: Ieae6234157e14111c66ebb46b7456a7e6b5ec8c6
+---
+ private/compat/26.0/26.0.ignore.cil | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/private/compat/26.0/26.0.ignore.cil b/private/compat/26.0/26.0.ignore.cil
+index b37a5c5d..9e1eb977 100644
+--- a/private/compat/26.0/26.0.ignore.cil
++++ b/private/compat/26.0/26.0.ignore.cil
+@@ -3,8 +3,7 @@
+ ;;   previous ones.  Add here to pass checkapi tests.
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+-  ( adb_device
+-    adbd_exec
++  ( adbd_exec
+     broadcastradio_service
+     e2fs
+     e2fs_exec
+@@ -17,8 +16,6 @@
+     mediaprovider_tmpfs
+     netd_stable_secret_prop
+     package_native_service
+-    sdcard_posix
+-    sudaemon
+     sysfs_fs_ext4_features
+     system_net_netd_hwservice
+     thermal_service
+-- 
+2.13.1
+

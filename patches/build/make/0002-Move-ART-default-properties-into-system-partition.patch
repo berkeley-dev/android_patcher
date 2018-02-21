@@ -1,4 +1,4 @@
-From 29efa2e51b2f27220060bf7c72ebc34fbaa6b7fa Mon Sep 17 00:00:00 2001
+From 55179934ae10789afa6414effe4cfbecad9a402e Mon Sep 17 00:00:00 2001
 From: Jaekyun Seok <jaekyun@google.com>
 Date: Fri, 3 Nov 2017 15:33:10 +0900
 Subject: [PATCH 2/2] Move ART default properties into system partition
@@ -63,5 +63,5 @@ index 8aedee79c..f1b8f4596 100644
      pm.dexopt.bg-dexopt=speed-profile \
      pm.dexopt.ab-ota=speed-profile \
 -- 
-2.14.3
+2.13.1
 

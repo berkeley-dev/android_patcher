@@ -1,0 +1,44 @@
+From e76493d6fbd77970986f8709c9b4bd68c2c75260 Mon Sep 17 00:00:00 2001
+From: LuK1337 <priv.luk@gmail.com>
+Date: Wed, 21 Feb 2018 03:27:16 +0100
+Subject: [PATCH 07/11] Revert "sepolicy: update policies for sudaemon on O"
+
+This reverts commit 04dbe809774808dd7034c5885d9af72dbda6e2f3.
+---
+ public/domain.te | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/public/domain.te b/public/domain.te
+index 3df11ae8..2b45886a 100644
+--- a/public/domain.te
++++ b/public/domain.te
+@@ -654,8 +654,6 @@ full_treble_only(`
+     -init
+     -ueventd
+     -socket_between_core_and_vendor_violators
+-    -sudaemon
+-    -system_app
+   } {
+     file_type
+     dev_type
+@@ -807,7 +805,7 @@ neverallow * { file_type fs_type dev_type }:{ lnk_file fifo_file sock_file } mou
+ # Nobody should be able to execute su on user builds.
+ # On userdebug/eng builds, only dumpstate, shell, and
+ # su itself execute su.
+-neverallow { domain userdebug_or_eng(`-dumpstate -shell -su -sudaemon -init') } su_exec:file no_x_file_perms;
++neverallow { domain userdebug_or_eng(`-dumpstate -shell -su -sudaemon') } su_exec:file no_x_file_perms;
+ 
+ # Do not allow the introduction of new execmod rules. Text relocations
+ # and modification of executable pages are unsafe.
+@@ -911,7 +909,7 @@ neverallow {
+ 
+ # Only domains spawned from zygote and runas may have the appdomain attribute.
+ neverallow { domain -runas -webview_zygote -zygote } {
+-  appdomain -shell userdebug_or_eng(`-su -sudaemon')
++  appdomain -shell userdebug_or_eng(`-su')
+ }:process { transition dyntransition };
+ 
+ # Minimize read access to shell- or app-writable symlinks.
+-- 
+2.13.1
+

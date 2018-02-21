@@ -1,0 +1,28 @@
+From 80f2e39e360d894903014406447f595f990b09db Mon Sep 17 00:00:00 2001
+From: LuK1337 <priv.luk@gmail.com>
+Date: Wed, 21 Feb 2018 03:27:15 +0100
+Subject: [PATCH 06/11] Revert "sepolicy: add sudaemon to ignore list"
+
+This reverts commit a49f5e8f1151e2bfa84ae40880a739294f3257cc.
+
+Change-Id: Ifd7c3425b0afeac4e52faf2eaa357f90c4f84523
+---
+ public/domain.te | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/public/domain.te b/public/domain.te
+index 17590a3c..3df11ae8 100644
+--- a/public/domain.te
++++ b/public/domain.te
+@@ -807,7 +807,7 @@ neverallow * { file_type fs_type dev_type }:{ lnk_file fifo_file sock_file } mou
+ # Nobody should be able to execute su on user builds.
+ # On userdebug/eng builds, only dumpstate, shell, and
+ # su itself execute su.
+-neverallow { domain userdebug_or_eng(`-dumpstate -shell -su -sudaemon -domain -init') } su_exec:file no_x_file_perms;
++neverallow { domain userdebug_or_eng(`-dumpstate -shell -su -sudaemon -init') } su_exec:file no_x_file_perms;
+ 
+ # Do not allow the introduction of new execmod rules. Text relocations
+ # and modification of executable pages are unsafe.
+-- 
+2.13.1
+

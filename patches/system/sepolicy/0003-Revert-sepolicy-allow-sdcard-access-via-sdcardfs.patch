@@ -1,0 +1,43 @@
+From 55f8a9aa48eeb7e0d023529faa5654490165e58c Mon Sep 17 00:00:00 2001
+From: LuK1337 <priv.luk@gmail.com>
+Date: Wed, 21 Feb 2018 02:58:27 +0100
+Subject: [PATCH 03/11] Revert "sepolicy: allow sdcard access via sdcardfs"
+
+This reverts commit 9ed1371d72d0ccfc580be94c25e5a07c01c7b299.
+---
+ private/app.te             | 4 ++--
+ private/app_neverallows.te | 3 +--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/private/app.te b/private/app.te
+index c0deb085..00a37f05 100644
+--- a/private/app.te
++++ b/private/app.te
+@@ -238,8 +238,8 @@ allow { appdomain -isolated_app -ephemeral_app } sdcardfs:dir create_dir_perms;
+ allow { appdomain -isolated_app -ephemeral_app } sdcardfs:file create_file_perms;
+ # This should be removed if sdcardfs is modified to alter the secontext for its
+ # accesses to the underlying FS.
+-allow { appdomain -isolated_app -ephemeral_app } { media_rw_data_file sdcard_posix vfat }:dir create_dir_perms;
+-allow { appdomain -isolated_app -ephemeral_app } { media_rw_data_file sdcard_posix vfat }:file create_file_perms;
++allow { appdomain -isolated_app -ephemeral_app } { media_rw_data_file vfat }:dir create_dir_perms;
++allow { appdomain -isolated_app -ephemeral_app } { media_rw_data_file vfat }:file create_file_perms;
+ 
+ # Access OBBs (vfat images) mounted by vold (b/17633509)
+ # File write access allowed for FDs returned through Storage Access Framework
+diff --git a/private/app_neverallows.te b/private/app_neverallows.te
+index 583782d8..a3d7d498 100644
+--- a/private/app_neverallows.te
++++ b/private/app_neverallows.te
+@@ -84,8 +84,7 @@ neverallow { all_untrusted_apps -mediaprovider } {
+   fs_type
+   -fuse                     # sdcard
+   -sdcardfs                 # sdcard
+-  -sdcard_posix             # sdcard
+-  -vfat                     # sdcard
++  -vfat
+   file_type
+   -app_data_file            # The apps sandbox itself
+   -media_rw_data_file       # Internal storage. Known that apps can
+-- 
+2.13.1
+
