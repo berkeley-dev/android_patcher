@@ -1,17 +1,20 @@
-From 72c00de7eb2b7cfb0c424badefb817522e8ed5d1 Mon Sep 17 00:00:00 2001
-From: LuK1337 <priv.luk@gmail.com>
-Date: Wed, 21 Feb 2018 03:27:51 +0100
-Subject: [PATCH 10/11] Revert "sepolicy: Conditionally restore support for
- legacy f_adb interface"
+From 99972f0b003b5dbeef010f5ecadb0dfff81f13b0 Mon Sep 17 00:00:00 2001
+From: Luca Stefani <luca.stefani.ge1@gmail.com>
+Date: Wed, 21 Feb 2018 12:41:07 +0100
+Subject: [PATCH] Revert "sepolicy: Conditionally restore support for legacy
+ f_adb interface"
 
 This reverts commit 32f56ee0e05d0ff727e5589f955ef4743802f892.
+
+Change-Id: I07377c1dff1226b656f5b9b47f2510124f917fcc
 ---
- definitions.mk        | 1 -
- private/adbd.te       | 6 +-----
- private/file_contexts | 1 -
- public/device.te      | 1 -
- public/recovery.te    | 6 +-----
- 5 files changed, 2 insertions(+), 13 deletions(-)
+ definitions.mk                      | 1 -
+ private/adbd.te                     | 6 +-----
+ private/compat/26.0/26.0.ignore.cil | 3 +--
+ private/file_contexts               | 1 -
+ public/device.te                    | 1 -
+ public/recovery.te                  | 6 +-----
+ 6 files changed, 3 insertions(+), 15 deletions(-)
 
 diff --git a/definitions.mk b/definitions.mk
 index ab577cca..1af4c14b 100644
@@ -42,6 +45,20 @@ index 1f417f6c..47a6cbd8 100644
  allow adbd functionfs:dir search;
  allow adbd functionfs:file rw_file_perms;
  
+diff --git a/private/compat/26.0/26.0.ignore.cil b/private/compat/26.0/26.0.ignore.cil
+index b37a5c5d..1663f834 100644
+--- a/private/compat/26.0/26.0.ignore.cil
++++ b/private/compat/26.0/26.0.ignore.cil
+@@ -3,8 +3,7 @@
+ ;;   previous ones.  Add here to pass checkapi tests.
+ (typeattribute new_objects)
+ (typeattributeset new_objects
+-  ( adb_device
+-    adbd_exec
++  ( adbd_exec
+     broadcastradio_service
+     e2fs
+     e2fs_exec
 diff --git a/private/file_contexts b/private/file_contexts
 index b59a1ed5..c50994fd 100644
 --- a/private/file_contexts
@@ -84,5 +101,5 @@ index 3f277c3d..fe0b20e4 100644
    allow recovery functionfs:file rw_file_perms;
  
 -- 
-2.13.1
+2.16.2
 
