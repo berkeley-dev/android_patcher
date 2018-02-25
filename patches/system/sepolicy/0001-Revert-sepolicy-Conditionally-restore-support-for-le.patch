@@ -1,8 +1,8 @@
-From 99972f0b003b5dbeef010f5ecadb0dfff81f13b0 Mon Sep 17 00:00:00 2001
+From b77b4608f08c7c498feee951a8074691c2dfd2fe Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Wed, 21 Feb 2018 12:41:07 +0100
-Subject: [PATCH] Revert "sepolicy: Conditionally restore support for legacy
- f_adb interface"
+Subject: [PATCH 1/2] Revert "sepolicy: Conditionally restore support for
+ legacy f_adb interface"
 
 This reverts commit 32f56ee0e05d0ff727e5589f955ef4743802f892.
 

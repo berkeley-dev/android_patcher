@@ -1,0 +1,130 @@
+From 249af6002efee0a02d1e496f3fc5402e2277f206 Mon Sep 17 00:00:00 2001
+From: Luca Stefani <luca.stefani.ge1@gmail.com>
+Date: Sun, 25 Feb 2018 21:13:58 +0100
+Subject: [PATCH 2/2] Revert "sepolicy: Initial policy for recovery"
+
+This reverts commit 5e84bfc96ec99eb17be5fe09e9034e83590bf1a6.
+---
+ common/private/file_contexts     |  3 ---
+ common/private/property.te       |  1 -
+ common/private/property_contexts |  3 ---
+ common/private/recovery.te       | 44 ----------------------------------------
+ common/private/system_app.te     |  3 ---
+ common/private/vold.te           |  7 -------
+ 6 files changed, 61 deletions(-)
+ delete mode 100644 common/private/recovery.te
+ delete mode 100644 common/private/system_app.te
+
+diff --git a/common/private/file_contexts b/common/private/file_contexts
+index 9eed6fe..83ceb58 100644
+--- a/common/private/file_contexts
++++ b/common/private/file_contexts
+@@ -11,9 +11,6 @@
+ # Sysinit
+ /system/bin/sysinit                     u:object_r:sysinit_exec:s0
+ 
+-# For minivold in recovery
+-/sbin/minivold                          u:object_r:vold_exec:s0
+-
+ # Userinit
+ /data/local/userinit\.sh                u:object_r:userinit_data_exec:s0
+ /system/etc/init\.d/90userinit          u:object_r:userinit_exec:s0
+diff --git a/common/private/property.te b/common/private/property.te
+index 027c7ac..8f1cc9e 100644
+--- a/common/private/property.te
++++ b/common/private/property.te
+@@ -1,3 +1,2 @@
+ type adbtcp_prop, property_type;
+ type userinit_prop, property_type;
+-type recovery_prop, property_type;
+diff --git a/common/private/property_contexts b/common/private/property_contexts
+index 6449668..59832a3 100644
+--- a/common/private/property_contexts
++++ b/common/private/property_contexts
+@@ -1,5 +1,2 @@
+ adb.network.port              u:object_r:adbtcp_prop:s0
+ lineage.userinit.active       u:object_r:userinit_prop:s0
+-
+-recovery.perf.mode            u:object_r:recovery_prop:s0
+-adb.secure                    u:object_r:recovery_prop:s0
+diff --git a/common/private/recovery.te b/common/private/recovery.te
+deleted file mode 100644
+index e79894f..0000000
+--- a/common/private/recovery.te
++++ /dev/null
+@@ -1,44 +0,0 @@
+-recovery_only(`
+-
+-# XXX
+-##allow init rootfs:file write;
+-allow recovery pstorefs:dir search;
+-allow recovery pstorefs:file { open read };
+-allow recovery sf_lcd_density_prop:file { getattr open read };
+-allow recovery sysfs_graphics:dir search;
+-allow recovery sysfs_graphics:file { getattr open read write };
+-allow recovery vold:unix_stream_socket connectto;
+-allow recovery vold_socket:sock_file write;
+-##allow recovery default_prop:property_service set;
+-
+-# Secure adb (setup_adbd)
+-allow adbd adb_keys_file:dir search;
+-allow recovery adb_keys_file:dir r_dir_perms;
+-allow recovery adb_keys_file:file r_file_perms;
+-allow recovery shell_prop:property_service set;
+-
+-# Manage fstab and /adb_keys
+-allow recovery rootfs:file create_file_perms;
+-allow recovery rootfs:file link;
+-allow recovery rootfs:dir { write create rmdir add_name remove_name };
+-
+-# Sideload cache
+-allow recovery proc_meminfo:file { getattr open read };
+-
+-# Read storage files and directories
+-allow recovery tmpfs:dir mounton;
+-allow recovery media_rw_data_file:dir r_dir_perms;
+-allow recovery media_rw_data_file:file r_file_perms;
+-allow recovery vfat:dir r_dir_perms;
+-allow recovery vfat:file r_file_perms;
+-allow recovery sdcard_type:dir r_dir_perms;
+-allow recovery sdcard_type:file r_file_perms;
+-
+-# Control properties
+-allow recovery recovery_prop:property_service set;
+-allow recovery ffs_prop:property_service set;
+-
+-# Set system properties for various things
+-allow recovery system_prop:property_service set;
+-
+-')
+diff --git a/common/private/system_app.te b/common/private/system_app.te
+deleted file mode 100644
+index 1b41d9a..0000000
+--- a/common/private/system_app.te
++++ /dev/null
+@@ -1,3 +0,0 @@
+-# For the updaters
+-allow system_app cache_recovery_file:dir {add_name rw_file_perms};
+-allow system_app cache_recovery_file:file {create rw_file_perms};
+diff --git a/common/private/vold.te b/common/private/vold.te
+index a7fb84f..0ac6e81 100644
+--- a/common/private/vold.te
++++ b/common/private/vold.te
+@@ -1,5 +1,3 @@
+-domain_trans(init, rootfs, vold)
+-
+ # NTFS-3g wants to drop permission
+ allow vold self:capability { setgid setuid };
+ 
+@@ -7,8 +5,3 @@ allow vold self:capability { setgid setuid };
+ allow vold mkfs_exec:file { execute read open getattr execute_no_trans };
+ allow vold mnt_media_rw_stub_file:dir r_dir_perms;
+ allow vold storage_stub_file:dir { rw_file_perms search add_name };
+-
+-# Vold can also run as minivold in the rootfs
+-recovery_only(`
+-  allow vold rootfs:dir { add_name write };
+-')
+-- 
+2.16.2
+

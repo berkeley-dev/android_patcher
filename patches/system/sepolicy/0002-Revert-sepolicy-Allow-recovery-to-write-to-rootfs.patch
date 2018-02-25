@@ -1,0 +1,26 @@
+From 8720d3a40dca830a74ecb44a6712aba64f37da36 Mon Sep 17 00:00:00 2001
+From: Luca Stefani <luca.stefani.ge1@gmail.com>
+Date: Sun, 25 Feb 2018 21:13:48 +0100
+Subject: [PATCH 2/2] Revert "sepolicy: Allow recovery to write to rootfs"
+
+This reverts commit c994face15fbcbd8c0b083ca5d36e0b2258b033a.
+---
+ public/domain.te | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/public/domain.te b/public/domain.te
+index 8640baaa..858e7c65 100644
+--- a/public/domain.te
++++ b/public/domain.te
+@@ -412,7 +412,7 @@ neverallow * exec_type:dir_file_class_set mounton;
+ neverallow { domain -init } { system_file vendor_file_type }:dir_file_class_set mounton;
+ 
+ # Nothing should be writing to files in the rootfs.
+-neverallow { domain userdebug_or_eng(`-recovery') } rootfs:file { create write setattr relabelto append unlink link rename };
++neverallow * rootfs:file { create write setattr relabelto append unlink link rename };
+ 
+ # Restrict context mounts to specific types marked with
+ # the contextmount_type attribute.
+-- 
+2.16.2
+
