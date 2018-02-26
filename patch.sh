@@ -2,6 +2,7 @@ ROOT="${PWD}"
 REPOSITORIES=(
     'build/make'
     'device/lineage/sepolicy'
+    'frameworks/native'
     'system/core'
     'system/sepolicy'
     'system/vold'
