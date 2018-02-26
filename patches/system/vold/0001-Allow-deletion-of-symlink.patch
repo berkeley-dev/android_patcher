@@ -16,7 +16,7 @@ index dc2e42a..6398464 100644
  static bool destroy_dir(const std::string& dir) {
      LOG(DEBUG) << "Destroying: " << dir;
      if (rmdir(dir.c_str()) != 0 && errno != ENOENT) {
-+        if(unlink(dir.c_str()) == 0) return true;
++        if (unlink(dir.c_str()) == 0) return true;
          PLOG(ERROR) << "Failed to destroy " << dir;
          return false;
      }
