@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ROOT="${PWD}"
 REPOSITORIES=(
     'build/make'
