@@ -1,4 +1,4 @@
-From 0372481ec66719a78787e08d41b16e4ae3a477ac Mon Sep 17 00:00:00 2001
+From fb37aae01b9d3e0bf3757a32a6b130ba24b766a5 Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Mon, 26 Feb 2018 20:28:40 +0100
 Subject: [PATCH 2/2] Revert "sepolicy: Policy for recovery"
@@ -24,14 +24,14 @@ Change-Id: I7ebede8ee13c7a81e7954cc243b94c108a4dafad
  common/private/file_contexts     |  3 ---
  common/private/property.te       |  1 -
  common/private/property_contexts |  2 --
- common/private/recovery.te       | 35 -----------------------------------
+ common/private/recovery.te       | 37 -------------------------------------
  common/private/system_app.te     |  3 ---
  common/private/vold.te           |  7 -------
  common/public/property.te        |  1 -
  common/public/property_contexts  |  1 -
  qcom/private/recovery.te         |  6 ------
  qcom/sepolicy.mk                 |  3 ---
- 10 files changed, 62 deletions(-)
+ 10 files changed, 64 deletions(-)
  delete mode 100644 common/private/recovery.te
  delete mode 100644 common/private/system_app.te
  delete mode 100644 common/public/property.te
@@ -71,10 +71,10 @@ index ac89985..59832a3 100644
 -recovery.perf.mode            u:object_r:recovery_prop:s0
 diff --git a/common/private/recovery.te b/common/private/recovery.te
 deleted file mode 100644
-index d6f5295..0000000
+index 37fb553..0000000
 --- a/common/private/recovery.te
 +++ /dev/null
-@@ -1,35 +0,0 @@
+@@ -1,37 +0,0 @@
 -recovery_only(`
 -
 -# XXX
@@ -89,8 +89,10 @@ index d6f5295..0000000
 -set_prop(recovery, shell_prop)
 -
 -# Manage fstab and /adb_keys
+-userdebug_or_eng(`
 -allow recovery rootfs:file create_file_perms;
 -allow recovery rootfs:file link;
+-')
 -allow recovery rootfs:dir { write create rmdir add_name remove_name };
 -
 -# Sideload cache
@@ -179,5 +181,5 @@ index c65816c..dcc5eab 100644
      device/lineage/sepolicy/qcom/common \
      device/lineage/sepolicy/qcom/$(TARGET_BOARD_PLATFORM)
 -- 
-2.16.2
+2.14.3
 

@@ -1,4 +1,4 @@
-From adbf8c21659814ee7ca4e67a9f172bdc764b43bb Mon Sep 17 00:00:00 2001
+From dff6f2d119d71a985ff90f8267010840fbe87f4b Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Wed, 21 Feb 2018 12:51:47 +0100
 Subject: [PATCH 1/2] Remove duplicated genfscon
@@ -18,5 +18,5 @@ index 72579a3..6210791 100644
  genfscon ntfs / u:object_r:vfat:s0
  genfscon sdfat / u:object_r:vfat:s0
 -- 
-2.16.2
+2.14.3
 
