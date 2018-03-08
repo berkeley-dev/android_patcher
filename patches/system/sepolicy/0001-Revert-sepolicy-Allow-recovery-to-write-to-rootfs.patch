@@ -1,7 +1,7 @@
-From 8720d3a40dca830a74ecb44a6712aba64f37da36 Mon Sep 17 00:00:00 2001
+From ae7598c4df1c71db21a0ec5a7504c011c54b14f5 Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Sun, 25 Feb 2018 21:13:48 +0100
-Subject: [PATCH 2/2] Revert "sepolicy: Allow recovery to write to rootfs"
+Subject: [PATCH] Revert "sepolicy: Allow recovery to write to rootfs"
 
 This reverts commit c994face15fbcbd8c0b083ca5d36e0b2258b033a.
 ---
