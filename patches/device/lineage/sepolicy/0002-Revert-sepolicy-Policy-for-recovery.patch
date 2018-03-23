@@ -1,4 +1,4 @@
-From 08e8ad15d09b62f0190ae471265129adc7234f7e Mon Sep 17 00:00:00 2001
+From 0fc55ed609b449f88380e8ee8ee7ce3a8de72c95 Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Mon, 26 Feb 2018 20:28:40 +0100
 Subject: [PATCH 2/2] Revert "sepolicy: Policy for recovery"
@@ -26,12 +26,12 @@ Change-Id: I7ebede8ee13c7a81e7954cc243b94c108a4dafad
  common/private/property_contexts |  2 --
  common/private/recovery.te       | 37 -------------------------------------
  common/private/system_app.te     |  3 ---
- common/private/vold.te           |  7 -------
+ common/private/vold.te           |  8 --------
  common/public/property.te        |  1 -
  common/public/property_contexts  |  1 -
- qcom/private/recovery.te         |  6 ------
+ qcom/private/recovery.te         | 12 ------------
  qcom/sepolicy.mk                 |  3 ---
- 10 files changed, 64 deletions(-)
+ 10 files changed, 71 deletions(-)
  delete mode 100644 common/private/recovery.te
  delete mode 100644 common/private/system_app.te
  delete mode 100644 common/public/property.te
@@ -122,7 +122,7 @@ index 1b41d9a..0000000
 -allow system_app cache_recovery_file:dir {add_name rw_file_perms};
 -allow system_app cache_recovery_file:file {create rw_file_perms};
 diff --git a/common/private/vold.te b/common/private/vold.te
-index 57e013c..6668157 100644
+index be1cf24..6668157 100644
 --- a/common/private/vold.te
 +++ b/common/private/vold.te
 @@ -1,5 +1,3 @@
@@ -131,7 +131,7 @@ index 57e013c..6668157 100644
  # NTFS-3g wants to drop permission
  allow vold self:capability { setgid setuid };
  
-@@ -7,8 +5,3 @@ allow vold self:capability { setgid setuid };
+@@ -7,9 +5,3 @@ allow vold self:capability { setgid setuid };
  allow vold mkfs_exec:file rx_file_perms;
  allow vold mnt_media_rw_stub_file:dir r_dir_perms;
  allow vold storage_stub_file:dir rw_dir_perms;
@@ -139,6 +139,7 @@ index 57e013c..6668157 100644
 -# Vold can also run as minivold in the rootfs
 -recovery_only(`
 -  allow vold rootfs:dir { add_name write };
+-  allow vold rootfs:file execute_no_trans;
 -')
 diff --git a/common/public/property.te b/common/public/property.te
 deleted file mode 100644
@@ -156,14 +157,20 @@ index 36f5f3b..0000000
 -ro.sf.lcd_density             u:object_r:sf_lcd_density_prop:s0
 diff --git a/qcom/private/recovery.te b/qcom/private/recovery.te
 deleted file mode 100644
-index dbdb205..0000000
+index 0e8416e..0000000
 --- a/qcom/private/recovery.te
 +++ /dev/null
-@@ -1,6 +0,0 @@
+@@ -1,12 +0,0 @@
 -recovery_only(`
 -
 -allow recovery sysfs_graphics:dir search;
 -allow recovery sysfs_graphics:file { getattr open read write };
+-
+-# Battery and USB status
+-allow recovery sysfs_battery_supply:dir search;
+-allow recovery sysfs_battery_supply:file { getattr open read };
+-allow recovery sysfs_usb_supply:dir search;
+-allow recovery sysfs_usb_supply:file { getattr open read };
 -
 -')
 diff --git a/qcom/sepolicy.mk b/qcom/sepolicy.mk
