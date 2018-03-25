@@ -1,4 +1,4 @@
-From 0fc55ed609b449f88380e8ee8ee7ce3a8de72c95 Mon Sep 17 00:00:00 2001
+From ab51fd4f7f2b46330a2a79a99f4955a8f1619e73 Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Mon, 26 Feb 2018 20:28:40 +0100
 Subject: [PATCH 2/2] Revert "sepolicy: Policy for recovery"
@@ -29,9 +29,9 @@ Change-Id: I7ebede8ee13c7a81e7954cc243b94c108a4dafad
  common/private/vold.te           |  8 --------
  common/public/property.te        |  1 -
  common/public/property_contexts  |  1 -
- qcom/private/recovery.te         | 12 ------------
+ qcom/private/recovery.te         |  5 -----
  qcom/sepolicy.mk                 |  3 ---
- 10 files changed, 71 deletions(-)
+ 10 files changed, 64 deletions(-)
  delete mode 100644 common/private/recovery.te
  delete mode 100644 common/private/system_app.te
  delete mode 100644 common/public/property.te
@@ -157,21 +157,14 @@ index 36f5f3b..0000000
 -ro.sf.lcd_density             u:object_r:sf_lcd_density_prop:s0
 diff --git a/qcom/private/recovery.te b/qcom/private/recovery.te
 deleted file mode 100644
-index 0e8416e..0000000
+index 517a8aa..0000000
 --- a/qcom/private/recovery.te
 +++ /dev/null
-@@ -1,12 +0,0 @@
+@@ -1,5 +0,0 @@
 -recovery_only(`
--
--allow recovery sysfs_graphics:dir search;
--allow recovery sysfs_graphics:file { getattr open read write };
--
--# Battery and USB status
--allow recovery sysfs_battery_supply:dir search;
--allow recovery sysfs_battery_supply:file { getattr open read };
--allow recovery sysfs_usb_supply:dir search;
--allow recovery sysfs_usb_supply:file { getattr open read };
--
+-r_dir_file(recovery, sysfs_battery_supply)
+-r_dir_file(recovery, sysfs_graphics)
+-r_dir_file(recovery, sysfs_usb_supply)
 -')
 diff --git a/qcom/sepolicy.mk b/qcom/sepolicy.mk
 index c65816c..dcc5eab 100644

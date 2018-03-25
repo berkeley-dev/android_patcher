@@ -1,4 +1,4 @@
-From b94120265e9d74ac99d93625bbb2b58d8af04308 Mon Sep 17 00:00:00 2001
+From e4f78c51c1b0db9a7faf10f441d5181d658423a0 Mon Sep 17 00:00:00 2001
 From: Luca Stefani <luca.stefani.ge1@gmail.com>
 Date: Wed, 21 Feb 2018 12:51:47 +0100
 Subject: [PATCH 1/2] Remove duplicated genfscon
