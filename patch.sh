@@ -2,11 +2,9 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
-    'device/lineage/sepolicy'
     'frameworks/native'
     'packages/apps/Camera2'
     'system/core'
-    'system/sepolicy'
     'system/vold'
 )
 
