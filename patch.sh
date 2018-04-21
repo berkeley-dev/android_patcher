@@ -4,7 +4,6 @@ ROOT="${PWD}"
 REPOSITORIES=(
     'frameworks/native'
     'packages/apps/Camera2'
-    'system/core'
     'system/vold'
 )
 
