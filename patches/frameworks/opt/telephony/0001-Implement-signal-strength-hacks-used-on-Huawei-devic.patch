@@ -1,0 +1,152 @@
+From 2646ba5045f3d0e31cbcaf7a6a0c1288008ba1b6 Mon Sep 17 00:00:00 2001
+From: codeworkx <daniel.hillenbrand@codeworkx.de>
+Date: Wed, 25 Apr 2018 11:55:04 +0200
+Subject: [PATCH] Implement signal strength hacks used on Huawei devices
+
+Change-Id: I1b1b80996ee88b6107c0cfd754caa4a1bfbaf13f
+---
+ src/java/com/android/internal/telephony/RIL.java | 112 +++++++++++++++++++++++
+ 1 file changed, 112 insertions(+)
+
+diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
+index 0e80ec50c..642f95794 100644
+--- a/src/java/com/android/internal/telephony/RIL.java
++++ b/src/java/com/android/internal/telephony/RIL.java
+@@ -341,6 +341,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+     final AtomicLong mRadioProxyCookie = new AtomicLong(0);
+     final RadioProxyDeathRecipient mRadioProxyDeathRecipient;
+     final RilHandler mRilHandler;
++    private static RIL sRil;
+ 
+     //***** Events
+     static final int EVENT_WAKE_LOCK_TIMEOUT    = 2;
+@@ -625,6 +626,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         mOemHookIndication = new OemHookIndication(this);
+         mRilHandler = new RilHandler();
+         mRadioProxyDeathRecipient = new RadioProxyDeathRecipient();
++        sRil = this;
+ 
+         PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
+         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, RILJ_LOG_TAG);
+@@ -5094,8 +5096,118 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+         return response;
+     }
+ 
++    static SignalStrength convertHalSignalStrengthHuawei(
++            android.hardware.radio.V1_0.SignalStrength signalStrength) {
++	            int gsmSignalStrength = signalStrength.gw.signalStrength;
++        int gsmBitErrorRate = signalStrength.gw.bitErrorRate;
++        int mWcdmaRscp = 0;
++        int mWcdmaEcio = 0;
++        int cdmaDbm = signalStrength.cdma.dbm;
++        int cdmaEcio = signalStrength.cdma.ecio;
++        int evdoDbm = signalStrength.evdo.dbm;
++        int evdoEcio = signalStrength.evdo.ecio;
++        int evdoSnr = signalStrength.evdo.signalNoiseRatio;
++        int lteSignalStrength = signalStrength.lte.signalStrength;
++        int lteRsrp = signalStrength.lte.rsrp;
++        int lteRsrq = signalStrength.lte.rsrq;
++        int lteRssnr = signalStrength.lte.rssnr;
++        int lteCqi = signalStrength.lte.cqi;
++        int mGsm = 0;
++        int mRat = 0;
++
++        if (lteRsrp != 0) { // LTE
++            if (lteRsrp > -44) { // None or Unknown
++                lteSignalStrength = 64;
++                lteRssnr = -200;
++            } else if (lteRsrp >= -85) { // Great
++                lteSignalStrength = 63;
++                lteRssnr = 300;
++            } else if (lteRsrp >= -95) { // Good
++                lteSignalStrength = 11;
++                lteRssnr = 129;
++            } else if (lteRsrp >= -105) { // Moderate
++                lteSignalStrength = 7;
++                lteRssnr = 44;
++            } else if (lteRsrp >= -115) { // Poor
++                lteSignalStrength = 4;
++                lteRssnr = 9;
++            } else if (lteRsrp >= -140) { // None or Unknown
++                lteSignalStrength = 64;
++                lteRssnr = -200;
++            }
++        } else if (gsmSignalStrength == 0 && lteRsrp == 0) { // 3G
++            lteRsrp = (mWcdmaRscp & 0xFF) - 256;
++            lteRsrq = (mWcdmaEcio & 0xFF) - 256;
++            if (lteRsrp > -20) { // None or Unknown
++                lteSignalStrength = 64;
++                lteRssnr = -200;
++            } else if (lteRsrp >= -85) { // Great
++                lteSignalStrength = 63;
++                lteRssnr = 300;
++            } else if (lteRsrp >= -95) { // Good
++                lteSignalStrength = 11;
++                lteRssnr = 129;
++            } else if (lteRsrp >= -105) { // Moderate
++                lteSignalStrength = 7;
++                lteRssnr = 44;
++            } else if (lteRsrp >= -115) { // Poor
++                lteSignalStrength = 4;
++                lteRssnr = 9;
++            } else if (lteRsrp >= -140) { // None or Unknown
++                lteSignalStrength = 64;
++                lteRssnr = -200;
++            }
++        } else if (mWcdmaRscp == 0 && lteRsrp == 0) { // 2G
++            lteRsrp = (gsmSignalStrength & 0xFF) - 256;
++            if (lteRsrp > -20) { // None or Unknown
++                lteSignalStrength = 64;
++                lteRsrq = -21;
++                lteRssnr = -200;
++            } else if (lteRsrp >= -85) { // Great
++                lteSignalStrength = 63;
++                lteRsrq = -3;
++                lteRssnr = 300;
++            } else if (lteRsrp >= -95) { // Good
++                lteSignalStrength = 11;
++                lteRsrq = -7;
++                lteRssnr = 129;
++            } else if (lteRsrp >= -105) { // Moderate
++                lteSignalStrength = 7;
++                lteRsrq = -12;
++                lteRssnr = 44;
++            } else if (lteRsrp >= -115) { // Poor
++                lteSignalStrength = 4;
++                lteRsrq = -17;
++                lteRssnr = 9;
++            } else if (lteRsrp >= -140) { // None or Unknown
++                lteSignalStrength = 64;
++                lteRsrq = -21;
++                lteRssnr = -200;
++            }
++        }
++
++        return new SignalStrength(gsmSignalStrength,
++                gsmSignalStrength,
++                cdmaDbm,
++                cdmaEcio,
++                evdoDbm,
++                evdoEcio,
++                evdoSnr,
++                lteSignalStrength,
++                lteRsrp,
++                lteRsrq,
++                lteRssnr,
++                lteCqi,
++                signalStrength.tdScdma.rscp,
++                false);
++    }
++
+     static SignalStrength convertHalSignalStrength(
+             android.hardware.radio.V1_0.SignalStrength signalStrength) {
++        if (sRil.needsOldRilFeature("huawei_signalstrength")) {
++            return convertHalSignalStrengthHuawei(signalStrength);
++        }
++
+         return new SignalStrength(signalStrength.gw.signalStrength,
+                 signalStrength.gw.bitErrorRate,
+                 signalStrength.cdma.dbm,
+-- 
+2.14.3
+
