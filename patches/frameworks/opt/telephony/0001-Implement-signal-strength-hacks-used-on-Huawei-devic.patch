@@ -1,15 +1,15 @@
-From ad603ee671232f78c2886cfe3ae1065915654045 Mon Sep 17 00:00:00 2001
+From fe63f4a788a6ef0f37dadceaa4275994882fd5f9 Mon Sep 17 00:00:00 2001
 From: codeworkx <daniel.hillenbrand@codeworkx.de>
 Date: Wed, 25 Apr 2018 11:55:04 +0200
 Subject: [PATCH] Implement signal strength hacks used on Huawei devices
 
 Change-Id: I1b1b80996ee88b6107c0cfd754caa4a1bfbaf13f
 ---
- src/java/com/android/internal/telephony/RIL.java | 119 +++++++++++++++++++++++
- 1 file changed, 119 insertions(+)
+ src/java/com/android/internal/telephony/RIL.java | 117 +++++++++++++++++++++++
+ 1 file changed, 117 insertions(+)
 
 diff --git a/src/java/com/android/internal/telephony/RIL.java b/src/java/com/android/internal/telephony/RIL.java
-index 0e80ec50c..367e29864 100644
+index 0e80ec50c..00f931150 100644
 --- a/src/java/com/android/internal/telephony/RIL.java
 +++ b/src/java/com/android/internal/telephony/RIL.java
 @@ -341,6 +341,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
@@ -28,13 +28,12 @@ index 0e80ec50c..367e29864 100644
  
          PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
          mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, RILJ_LOG_TAG);
-@@ -5094,8 +5096,125 @@ public final class RIL extends BaseCommands implements CommandsInterface {
+@@ -5094,8 +5096,123 @@ public final class RIL extends BaseCommands implements CommandsInterface {
          return response;
      }
  
 +    static SignalStrength convertHalSignalStrengthHuawei(
 +            android.hardware.radio.V1_0.SignalStrength signalStrength) {
-+	            int gsmSignalStrength = signalStrength.gw.signalStrength;
 +        String[] signalCustGsm = SystemProperties.get("gsm.sigcust.gsm",
 +                "5,false,-109,-103,-97,-91,-85").split(",");
 +        String[] signalCustLte = SystemProperties.get("gsm.sigcust.lte",
@@ -42,6 +41,7 @@ index 0e80ec50c..367e29864 100644
 +        String[] signalCustUmts = SystemProperties.get("gsm.sigcust.umts",
 +                "5,false,-112,-105,-99,-93,-87").split(",");
 +
++        int gsmSignalStrength = signalStrength.gw.signalStrength;
 +        int gsmBitErrorRate = signalStrength.gw.bitErrorRate;
 +        int mWcdmaRscp = 0;
 +        int mWcdmaEcio = 0;
@@ -55,8 +55,6 @@ index 0e80ec50c..367e29864 100644
 +        int lteRsrq = signalStrength.lte.rsrq;
 +        int lteRssnr = signalStrength.lte.rssnr;
 +        int lteCqi = signalStrength.lte.cqi;
-+        int mGsm = 0;
-+        int mRat = 0;
 +
 +        if (signalCustLte.length == 7 && lteRsrp != 0) { // LTE
 +            if (lteRsrp > -44) { // None or Unknown
