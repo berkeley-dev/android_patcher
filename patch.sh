@@ -4,7 +4,6 @@ ROOT="${PWD}"
 REPOSITORIES=(
     'frameworks/native'
     'packages/apps/Camera2'
-    'system/vold'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
