@@ -1,7 +1,7 @@
-From 80fc6181cf14f2d21a34668501a0052897bb9794 Mon Sep 17 00:00:00 2001
+From 54a75bea2b3009c2feb2578c198fa480a687f617 Mon Sep 17 00:00:00 2001
 From: codeworkx <daniel.hillenbrand@codeworkx.de>
 Date: Wed, 25 Apr 2018 11:55:04 +0200
-Subject: [PATCH 1/1] Implement signal strength hacks used on Huawei devices
+Subject: [PATCH 1/2] Implement signal strength hacks used on Huawei devices
 
 Change-Id: I1b1b80996ee88b6107c0cfd754caa4a1bfbaf13f
 ---
