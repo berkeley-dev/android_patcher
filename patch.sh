@@ -3,7 +3,6 @@
 ROOT="${PWD}"
 REPOSITORIES=(
     'frameworks/native'
-    'frameworks/opt/telephony'
     'packages/apps/Camera2'
 )
 
