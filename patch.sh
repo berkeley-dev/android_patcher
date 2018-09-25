@@ -2,8 +2,11 @@
 
 ROOT="${PWD}"
 REPOSITORIES=(
+    'frameworks/base'
     'frameworks/native'
+    'frameworks/opt/telephony'
     'packages/apps/Camera2'
+    'packages/services/Telephony'
 )
 
 for repository in "${REPOSITORIES[@]}"; do
