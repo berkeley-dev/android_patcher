@@ -3,7 +3,7 @@
 . build/envsetup.sh
 
 # build
-repopick 235958 # build: Support systam-as-root A-only backuptool
+repopick 235958 # build: Support system-as-root A-only backuptool
 
 # frameworks/base
 repopick 229606 # ConsumerIR: Support Huawei's DSP chip implementation
@@ -16,4 +16,4 @@ repopick 227125 # RIL: Allow overriding RadioResponse and RadioIndication
 repopick 229610 # Telephony: Support muting by RIL command
 
 # vendor/lineage
-repopick 235959 # lineage: Support systam-as-root A-only backuptool
+repopick 235959 # lineage: Support system-as-root A-only backuptool
